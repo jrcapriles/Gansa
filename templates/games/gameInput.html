@@ -478,6 +478,7 @@
     }
     function showFinal(value){
         var select = document.getElementById(value);
+        console.log({select});
         if (select){
             select.style.visibility = 'visible';
         }
@@ -819,8 +820,6 @@
     $('#semi').click( function (){
         $(`span[name=teamA][id='final']`).text('')
         $(`span[name=teamB][id='final']`).text('')
-        // Reset any entry in the finale array.
-        $(`#finale`).empty();
         
         hide(`q${t}`)
         for (i=1; i <= 2 ; i++) {
@@ -828,6 +827,8 @@
             resB = $(`input[name=resB][id=semi${i}]`).val()
             var teamA = $(`span[name=teamA][id=semi${i}]`).text()
             var teamB = $(`span[name=teamB][id=semi${i}]`).text()
+
+            
             var side, teamW
             side = i%2 == 0 ? 'B' : 'A'
             if (resA == resB){
@@ -850,12 +851,7 @@
                     loose = teamA
                 }
             }
-            if(teamA.length > 0){
-                $('#finale').append(`
-                <option value=${winner}>${winner}</option>
-                `)
-            }
-            
+                        
             $('<input>').attr({
                 type: 'hidden',
                 id: `semi${i}`,
@@ -938,29 +934,22 @@
         teamB = $(`span[name=teamB][id=${this.id}]`).text()
         console.log(teamA, teamB)
         if (resA > resB) {
-            showFinal('finale')
             // if teamA won only keep teamA here.
-            $(`#finale`).empty();
-            $('#finale').append(`
-                <option value=${teamA}>${teamA}</option>
-                `)
+            $('#finale').empty().append(`<option value=${teamA}>${teamA}</option>`)
+            $('#finale').prop('disabled', true);
+            showFinal('finale');
         } else if (resA < resB) {
-            showFinal('finale')
             // if teamB won only keep teamB here.
-            $(`#finale`).empty();
-            $('#finale').append(`
-                <option value=${teamB}>${teamB}</option>
-                `)
+            $('#finale').empty().append(`<option value=${teamB}>${teamB}</option>`)
+            $('#finale').prop('disabled', true);
+            showFinal('finale');
         } else {
             // If it is a tie keep both teams.
-            $(`#finale`).empty();
-            $('#finale').append(`
-                <option value=${teamA}>${teamA}</option>
-                `)
-            $('#finale').append(`
-                <option value=${teamB}>${teamB}</option>
-            `)
-            showFinal('finale')
+            $('#finale').empty().append(
+                `<option value=${teamA}>${teamA}</option>
+                 <option value=${teamB}>${teamB}</option>`)
+            $('#finale').prop('disabled', false);
+            showFinal('finale');
         }
     })
 
